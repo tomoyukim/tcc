@@ -1,4 +1,4 @@
-CFLAGS=-std=11 -Wall -g -static
+CFLAGS=-std=c11 -Wall -g -static
 
 tcc: tcc.c
 
