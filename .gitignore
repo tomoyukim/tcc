@@ -2,3 +2,5 @@
 *.o
 tmp*
 tcc
+*_flymake.c
+.ccls-cache/
