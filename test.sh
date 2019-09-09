@@ -4,7 +4,7 @@ try() {
     input="$2"
 
     ./tcc "$input" > tmp.s
-    gcc -o tmp tmp.s
+    gcc -static -o tmp tmp.s
     ./tmp
     actual="$?"
 
