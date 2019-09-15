@@ -6,6 +6,27 @@ char *user_input;
 // current token
 Token *token;
 
+void dump() {
+  Token *cur = token;
+  while(cur) {
+    switch(cur->kind) {
+    case TK_NUM:
+      printf("num: %d\n", cur->val);
+      break;
+    case TK_IDENT:
+      printf("idt: %.1s\n", cur->str);
+      break;
+    case TK_EOF:
+      printf("eof\n");
+      break;
+    default:
+      printf("rsv: %.1s\n", cur->str);
+      break;
+    }
+    cur = cur->next;
+  }
+}
+
 int main(int argc, char **argv) {
   if (argc != 2) {
       error("%s: Invalid argument num!\n", argv[0]);
@@ -15,12 +36,13 @@ int main(int argc, char **argv) {
   // tokenize
   user_input = argv[1];
   token = tokenize();
+  //dump();
 
   // parse
-  Node *node = program();
+  program();
 
   // generate code tracing AST
-  codegen(node);
+  codegen();
 
   return 0;
 }

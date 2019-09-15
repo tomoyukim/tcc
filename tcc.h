@@ -8,6 +8,7 @@
 // value stands for token type
 typedef enum {
   TK_RESERVED,
+  TK_IDENT,
   TK_NUM,
   TK_EOF,
 } TokenKind;
@@ -33,15 +34,17 @@ Token *tokenize();
 
 // Kind of Node for AST
 typedef enum {
-  ND_ADD, // +
-  ND_SUB, // -
-  ND_MUL, // *
-  ND_DIV, // /
-  ND_NUM, // integer
-  ND_LT, // less than <
-  ND_LE, // less than or equal <=
-  ND_EQ, // equal ==
-  ND_NE, // not equal !=
+  ND_ADD,    // +
+  ND_SUB,    // -
+  ND_MUL,    // *
+  ND_DIV,    // /
+  ND_NUM,    // integer
+  ND_LT,     // less than <
+  ND_LE,     // less than or equal <=
+  ND_EQ,     // equal ==
+  ND_NE,     // not equal !=
+  ND_ASSIGN, // =
+  ND_LVAR    // local variable
 } NodeKind;
 
 typedef struct Node Node;
@@ -50,10 +53,12 @@ struct Node {
   Node *lhs;
   Node *rhs;
   int val;
+  int offset;
 };
 
 // parse.c
-Node *program();
+Node *code[100];
+void program();
 
 // codegen.c
-void codegen(Node *node);
+void codegen();

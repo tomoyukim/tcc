@@ -51,6 +51,12 @@ Token *tokenize() {
       continue;
     }
 
+    // variable
+    if ('a' <= *p && *p <= 'z') {
+        cur = new_token(TK_IDENT, cur, p++, 1);
+        continue;
+    }
+
     // first check 2 characters
     if (start_with(p, "==") || start_with(p, "!=") ||
         start_with(p, ">=") || start_with(p, "<=")) {
@@ -59,7 +65,7 @@ Token *tokenize() {
       continue;
     }
 
-    if (strchr("+-*/()<>", *p)) {
+    if (ispunct(*p)) {
       cur = new_token(TK_RESERVED, cur, p++, 1);
       continue;
     }

@@ -3,13 +3,22 @@
 // Read token and return true if expected symbol.
 // Otherwise return false.
 bool consume(char *op) {
-    if (token->kind != TK_RESERVED ||
-        strlen(op) != token->len ||
-        memcmp(token->str, op, token->len)) {
+  if (token->kind != TK_RESERVED ||
+      strlen(op) != token->len ||
+      memcmp(token->str, op, token->len)) {
     return false;
   }
   token = token->next;
   return true;
+}
+
+Token *consume_ident() {
+  if (token->kind != TK_IDENT) {
+      return NULL;
+  }
+  Token *t = token;
+  token = token->next;
+  return t;
 }
 
 // Read token if the token is expected symbol.
@@ -57,6 +66,12 @@ Node *new_num(int val) {
   return node;
 }
 
+Node *new_var(int offset) {
+  Node *node = new_node(ND_LVAR);
+  node->offset = offset;
+  return node;
+}
+
 Node *expr();
 
 // primary = "(" expr ")" | num
@@ -66,6 +81,10 @@ Node *primary() {
     Node *node = expr();
     expect(")");
     return node;
+  }
+  Token *t = consume_ident();
+  if (t) {
+    return new_var((t->str[0] - 'a' + 1) * 8);
   }
   // otherwise, expect a number;
   return new_num(expect_number());
@@ -146,11 +165,30 @@ Node *equality() {
   }
 }
 
-// expr = equality
-Node *expr() {
-  return equality();
+// assign = equality ("=" assign)?
+Node *assign() {
+  Node *node = equality();
+  if (consume("=")) {
+    node = new_binary(ND_ASSIGN, node, assign());
+  }
+  return node;
 }
 
-Node *program() {
-  return expr();
+// expr = assign
+Node *expr() {
+  return assign();
+}
+
+Node *stmt() {
+  Node *node = expr();
+  expect(";");
+  return node;
+}
+
+void program() {
+  int i = 0;
+  while (!at_eof()) {
+    code[i++] = stmt();
+  }
+  code[i] = NULL;
 }
