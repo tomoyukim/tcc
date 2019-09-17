@@ -53,4 +53,7 @@ try 8 'a=8;'
 try 3 'b=1+2;'
 try 3 'a=1;a+2;'
 
+try 10 'r25=10;'
+try 3 'foo=1;bar=2;foo+bar;'
+
 echo OK

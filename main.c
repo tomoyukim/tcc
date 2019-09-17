@@ -14,7 +14,7 @@ void dump() {
       printf("num: %d\n", cur->val);
       break;
     case TK_IDENT:
-      printf("idt: %.1s\n", cur->str);
+      printf("idt: %s\n", strndup(cur->str, cur->len));
       break;
     case TK_EOF:
       printf("eof\n");

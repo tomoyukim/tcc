@@ -66,10 +66,28 @@ Node *new_num(int val) {
   return node;
 }
 
-Node *new_var(int offset) {
+Node *new_var(LVar *lvar) {
   Node *node = new_node(ND_LVAR);
-  node->offset = offset;
+  node->lvar = lvar;
   return node;
+}
+
+LVar *new_lvar(char *name) {
+  LVar *lvar = calloc(1, sizeof(LVar));
+  lvar->name = name;
+  lvar->len = strlen(name);
+  lvar->next = locals;
+  locals = lvar;
+  return lvar;
+}
+
+LVar *find_lvar(Token *token) {
+  for (LVar *var = locals; var; var = var->next) {
+    if (var->len == token->len && !memcmp(token->str, var->name, token->len)) {
+      return var;
+    }
+  }
+  return NULL;
 }
 
 Node *expr();
@@ -84,7 +102,11 @@ Node *primary() {
   }
   Token *t = consume_ident();
   if (t) {
-    return new_var((t->str[0] - 'a' + 1) * 8);
+    LVar *lvar = find_lvar(t);
+    if (!lvar) {
+      lvar = new_lvar(strndup(t->str, t->len));
+    }
+    return new_var(lvar);
   }
   // otherwise, expect a number;
   return new_num(expect_number());

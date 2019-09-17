@@ -6,7 +6,7 @@ void gen_lval(Node *node) {
   }
 
   printf("  mov rax, rbp\n");
-  printf("  sub rax, %d\n", node->offset);
+  printf("  sub rax, %d\n", node->lvar->offset);
   printf("  push rax\n");
 }
 
@@ -86,10 +86,15 @@ void codegen() {
   printf("main:\n");
 
   // prologue
-  // alloc 8 * 26 size
+  int offset = 0;
+  for (LVar *var = locals; var; var = var->next) {
+    offset += 8;
+    var->offset = offset;
+  }
+
   printf("  push rbp\n");
   printf("  mov rbp, rsp\n");
-  printf("  sub rsp, 208\n");
+  printf("  sub rsp, %d\n", offset);
 
   for (int i = 0; code[i]; i++) {
     gen(code[i]);

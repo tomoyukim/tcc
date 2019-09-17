@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -47,17 +48,26 @@ typedef enum {
   ND_LVAR    // local variable
 } NodeKind;
 
+typedef struct LVar LVar;
+struct LVar {
+  LVar *next;
+  char *name;
+  int len;
+  int offset;
+};
+
 typedef struct Node Node;
 struct Node {
   NodeKind kind;
   Node *lhs;
   Node *rhs;
   int val;
-  int offset;
+  LVar *lvar;
 };
 
 // parse.c
 Node *code[100];
+LVar *locals;
 void program();
 
 // codegen.c
