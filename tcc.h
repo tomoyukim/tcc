@@ -45,7 +45,8 @@ typedef enum {
   ND_EQ,     // equal ==
   ND_NE,     // not equal !=
   ND_ASSIGN, // =
-  ND_LVAR    // local variable
+  ND_LVAR,   // local variable
+  ND_RETURN  // return keyward
 } NodeKind;
 
 typedef struct LVar LVar;

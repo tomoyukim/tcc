@@ -31,6 +31,14 @@ void gen(Node *node) {
     printf("  mov [rax], rdi\n");
     printf("  push rdi\n");
     return;
+  case ND_RETURN:
+    gen(node->lhs);
+
+    printf("  pop rax\n");
+    printf("  jmp .L.return\n");
+    return;
+  default:
+    break;
   }
 
   gen(node->lhs);
@@ -75,6 +83,8 @@ void gen(Node *node) {
     printf("  setne al\n");
     printf("  movzb rax, al\n");
     break;
+  default:
+    break;
   }
 
   printf("  push rax\n");
@@ -98,12 +108,10 @@ void codegen() {
 
   for (int i = 0; code[i]; i++) {
     gen(code[i]);
-    // pop in order to avoid stack overflow
-    // because 1 value should be left in the stack as the result of eval expression
-    printf("  pop rax\n");
   }
 
   // epilogue
+  printf(".L.return:\n");
   printf("  mov rsp, rbp\n");
   printf("  pop rbp\n");
   printf("  ret\n");

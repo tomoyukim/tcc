@@ -51,6 +51,13 @@ Token *tokenize() {
       continue;
     }
 
+    // return
+    if (start_with(p, "return") && !isalnum(p[6])) {
+      cur = new_token(TK_RESERVED, cur, p, 6);
+      p += 6;
+      continue;
+    }
+
     // variable
     if (isalpha(*p)) {
       char *q = p++;
